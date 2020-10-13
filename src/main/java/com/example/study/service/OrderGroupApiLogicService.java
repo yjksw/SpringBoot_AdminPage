@@ -2,15 +2,19 @@ package com.example.study.service;
 
 import com.example.study.ifs.CrudInterface;
 import com.example.study.model.entity.OrderGroup;
+import com.example.study.model.entity.User;
 import com.example.study.model.network.Header;
 import com.example.study.model.network.request.OrderGroupApiRequest;
 import com.example.study.model.network.response.OrderGroupApiResponse;
+import com.example.study.model.network.response.UserApiResponse;
 import com.example.study.repository.OrderGroupRepository;
 import com.example.study.repository.UserRepository;
+import org.hibernate.criterion.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 
 @Service
 public class OrderGroupApiLogicService implements CrudInterface<OrderGroupApiRequest, OrderGroupApiResponse> {
@@ -44,9 +48,13 @@ public class OrderGroupApiLogicService implements CrudInterface<OrderGroupApiReq
 
     @Override
     public Header<OrderGroupApiResponse> read(Long id) {
-        return orderGroupRepository.findById(id)
-                .map(this::response)
-                .orElseGet(() -> Header.ERROR("데이터 없음."));
+        Optional<OrderGroup> optional = orderGroupRepository.findById(id);
+
+        return optional
+                .map(user -> response(user))
+                .orElseGet(
+                        ()-> Header.ERROR("데이터 없음")
+                );
     }
 
     @Override
@@ -80,7 +88,7 @@ public class OrderGroupApiLogicService implements CrudInterface<OrderGroupApiReq
                     orderGroupRepository.delete(orderGroup);
                     return Header.OK();
                 })
-                .orElseGet(() -> Header.ERROR("데이터 없음."));
+                .orElseGet(() -> Header.ERROR("데이터 없음"));
     }
 
     public Header<OrderGroupApiResponse> response(OrderGroup orderGroup){
