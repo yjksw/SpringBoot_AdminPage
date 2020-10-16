@@ -21,6 +21,8 @@ public class Header<T> {
     //api 부가설명
     private String description;
 
+    private Pagination pagination;
+
     //data 부분
     private T data;
 
@@ -40,6 +42,17 @@ public class Header<T> {
                 .resultCode("OK")
                 .description("OK")
                 .data(data)
+                .build();
+    }
+
+    //DATA + Pagination OK
+    public static <T> Header<T> OK(T data, Pagination pagination){
+        return (Header<T>)Header.builder()
+                .transactionTime(LocalDateTime.now())
+                .resultCode("OK")
+                .description("OK")
+                .data(data)
+                .pagination(pagination)
                 .build();
     }
 
